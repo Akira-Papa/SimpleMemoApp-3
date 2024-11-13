@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-6">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newMemoModal">
+            <i class="bi bi-plus-lg"></i> 新規メモ
+        </button>
+    </div>
+    <div class="col-md-6">
+        <form id="searchForm" action="{{ url_for('index') }}" method="get">
+            <div class="input-group">
+                <input type="search" class="form-control" id="searchInput" name="search" 
+                       placeholder="メモを検索..." value="{{ search }}">
+                <button class="btn btn-outline-secondary" type="submit">検索</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row g-4">
+    {% for memo in memos %}
+    <div class="col-md-6 col-lg-4" id="memo-{{ memo.id }}">
+        <div class="card h-100 memo-card">
+            <div class="card-body">
+                <h5 class="card-title memo-title">{{ memo.title }}</h5>
+                <p class="card-text memo-content">{{ memo.content }}</p>
+                <p class="card-text timestamp text-muted">
+                    作成: {{ memo.created_at.strftime('%Y/%m/%d %H:%M') }}
+                    {% if memo.updated_at != memo.created_at %}
+                    <br>更新: {{ memo.updated_at.strftime('%Y/%m/%d %H:%M') }}
+                    {% endif %}
+                </p>
+            </div>
+            <div class="card-footer bg-transparent">
+                <button class="btn btn-sm btn-outline-primary" onclick="editMemo({{ memo.id }})"
+                        data-bs-toggle="tooltip" data-bs-title="編集">
+                    <i class="bi bi-pencil"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" onclick="confirmDelete({{ memo.id }})"
+                        data-bs-toggle="tooltip" data-bs-title="削除">
+                    <i class="bi bi-trash"></i>
+                </button>
+                <form id="deleteMemoForm-{{ memo.id }}" action="{{ url_for('delete_memo', id=memo.id) }}" 
+                      method="post" class="d-none"></form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- New Memo Modal -->
+<div class="modal fade" id="newMemoModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ url_for('new_memo') }}" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title">新規メモ</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="newMemoTitle" class="form-label">タイトル</label>
+                        <input type="text" class="form-control" id="newMemoTitle" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newMemoContent" class="form-label">内容</label>
+                        <textarea class="form-control" id="newMemoContent" name="content" rows="5" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Memo Modal -->
+<div class="modal fade" id="editMemoModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editMemoForm" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title">メモを編集</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="editMemoTitle" class="form-label">タイトル</label>
+                        <input type="text" class="form-control" id="editMemoTitle" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editMemoContent" class="form-label">内容</label>
+                        <textarea class="form-control" id="editMemoContent" name="content" rows="5" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+                    <button type="submit" class="btn btn-primary">更新</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
