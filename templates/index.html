@@ -33,13 +33,13 @@
                 </p>
             </div>
             <div class="card-footer bg-transparent">
-                <button class="btn btn-outline-primary mb-2 me-2 p-2" onclick="editMemo({{ memo.id }})"
+                <button class="btn btn-primary me-2" onclick="editMemo({{ memo.id }})"
                         data-bs-toggle="tooltip" data-bs-title="編集">
-                    <i class="bi bi-pencil"></i>
+                    <i class="bi bi-pencil"></i> 編集
                 </button>
-                <button class="btn btn-outline-danger mb-2 me-2 p-2" onclick="confirmDelete({{ memo.id }})"
+                <button class="btn btn-danger" onclick="confirmDelete({{ memo.id }})"
                         data-bs-toggle="tooltip" data-bs-title="削除">
-                    <i class="bi bi-trash"></i>
+                    <i class="bi bi-trash"></i> 削除
                 </button>
                 <form id="deleteMemoForm-{{ memo.id }}" action="{{ url_for('delete_memo', id=memo.id) }}" 
                       method="post" class="d-none"></form>
